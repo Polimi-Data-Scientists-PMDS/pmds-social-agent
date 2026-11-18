@@ -1,0 +1,2 @@
+# The current OpenCode probes use only Python's standard library.
+# Add project dependencies here as they are introduced.

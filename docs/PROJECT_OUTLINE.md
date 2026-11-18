@@ -13,8 +13,8 @@ A team member sends a request through Telegram, together with relevant links and
 
 ## Technical direction
 
-- Implement the agent in **Python**, starting with **LangChain**. Consider LangGraph later only if needed.
-- Provide access through **Telegram** and investigate using **OpenCode with Figma's MCP connector** for the Figma work. The required editing, image handling and remote operation still need to be validated.
+- Implement the agent in **Python**, starting with **LangChain** and the **DeepSeek API** as its model provider. The exact model and configuration remain open. Consider LangGraph later only if needed.
+- Start with a local command-line interface and plan for **Telegram** later. Use **OpenCode with Figma's MCP connector** for the proposed Figma work. A basic edit has been demonstrated; template editing, image handling and remote operation still need to be validated.
 - Develop locally first. To make the agent available to the wider team, aim to run it on a **virtual machine**, potentially using **Google Cloud or AWS**. The provider, costs and deployment details remain open.
 
 ## Next steps: define the project in detail
