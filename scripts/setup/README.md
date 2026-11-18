@@ -1,6 +1,6 @@
 # Python environment setup
 
-Each team member creates their own `.venv` on their computer. Install Python 3 with `venv` support first. The commands below are run from the root of this repository.
+Each team member creates their own `.venv` on their computer. Install Python 3.11 or newer with `venv` support first. The commands below are run from the root of this repository.
 
 ## macOS and Linux
 
@@ -64,4 +64,4 @@ When `requirements.txt` changes, update the existing environment:
 
 The scripts use the environment's Python directly, so activation is not required to run the create or update commands. Activation makes `python` point to the environment in your current terminal. Run `deactivate` when you are done.
 
-The create script stops if `.venv` already exists; use the update script instead. The update script installs the listed requirements, but does not remove packages that have been removed from `requirements.txt`. Currently, the file contains no third-party packages because the existing probes use Python's standard library.
+Use the update script if `.venv` already exists. It installs the requirements for the LangChain CLI. Installed packages that were removed from `requirements.txt` need to be uninstalled separately.

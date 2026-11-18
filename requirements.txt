@@ -1,2 +1,5 @@
-# The current OpenCode probes use only Python's standard library.
-# Add project dependencies here as they are introduced.
+langchain==1.5.0
+langchain-deepseek==1.2.0
+# The CLI handles API errors raised by the DeepSeek integration's SDK.
+openai==3.55.0
+pydantic>=2,<3

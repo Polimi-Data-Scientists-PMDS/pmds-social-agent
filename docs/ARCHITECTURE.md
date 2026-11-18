@@ -1,37 +1,37 @@
 # Architecture
 
-This document describes the intended application and what the current experiments have demonstrated. The application and LangChain agent have not been implemented yet.
+The first milestone is a local CLI that drafts one PMDS post from a brief and a frame link in a disposable template copy.
 
-## Intended flow
+## CLI flow
 
 ```text
-User → command line initially; Telegram later
-                  ↓
-         Python application / workflow
-                  ↓
-      LangChain agent ↔ DeepSeek API
-                  ↓ calls a Python tool
-         OpenCode service + its model
-                  ↓
-           Figma MCP → Figma
-                  ↓
-     Editable draft + caption for human review
+Brief + test frame URL → Python CLI
+                           ↓ brief
+                    LangChain + DeepSeek
+                           ↓ tool call (caption, design instructions)
+                      apply_figma_text ← test frame URL from Python
+                           ↓ HTTP (frame URL, design instructions)
+                    OpenCode + its own model
+                           ↓ Figma MCP
+                    Editable PMDS test frame
 ```
 
-1. **User interface:** A simple command-line interface will be the initial way to submit a brief. Telegram is intended later for text, images and conversation.
-2. **Application and workflow:** Python code will pass the request to the agent, coordinate the result and eventually manage things such as revisions and errors. Exact responsibilities and data formats are still to be designed.
-3. **LangChain agent:** The agent will use the **DeepSeek API** as its model provider. It will help prepare a caption and design instructions and can request the OpenCode tool. The exact DeepSeek model, credentials, cost controls and implementation remain to be chosen and configured.
-4. **OpenCode tool and service:** A Python function will communicate with a running OpenCode service over its HTTP API. OpenCode uses its own configured model and Figma MCP tools to carry out design tasks. It is a separate agent and model connection from the LangChain agent; either model can be configured independently.
-5. **Figma and review:** The goal is an editable design plus a separate caption. A person reviews the result before publication.
+1. **CLI** validates the brief, frame link and environment settings. It keeps the frame URL and passes the brief to the agent.
+2. **LangChain** gives DeepSeek the description and argument types for `apply_figma_text`. DeepSeek returns a tool call containing the caption and exact on-design copy. LangChain reads those arguments and invokes the Python function.
+3. **Python tool** supplies the frame URL to the OpenCode client and limits the run to one design submission. It keeps the caption in the result and returns directly to the CLI.
+4. **OpenCode client** uses HTTP Basic authentication to create an OpenCode 2 session, submit a prompt, and poll for an idle result. OpenCode's independently configured model uses the existing Figma MCP connection to inspect the target frame and apply text replacements.
+5. **Review** starts with the caption, frame URL, session ID when available, and OpenCode's report. The CLI requires an explicit edit report after the session finishes. The reviewer checks that the intended Figma layers actually changed and reviews the caption before publication.
 
-The Python-to-OpenCode HTTP code can live in the same application as the workflow; it does not require another intermediary service. OpenCode itself must be running and reachable. Credentials for DeepSeek, OpenCode and Figma need separate configuration and must not be committed.
+The CLI, agent and HTTP client run in one Python process. OpenCode is a separate running service. DeepSeek API credentials and the OpenCode HTTP password are configured in the local environment. OpenCode manages its own model credentials and Figma authorization.
 
-## What exists today
+## Verification
 
-The scripts in [`scripts/opencode_probe`](../scripts/opencode_probe/) are feasibility experiments. A Python probe successfully sent a request to OpenCode. The project lead also reported seeing a test label created in Figma through the probe, without further interaction after the initial sign-in.
+The CLI tests use a fake chat model with LangChain's actual tool dispatch and simulated OpenCode API responses. They cover the normal handoff, duplicate calls, invalid input or configuration, malformed responses, OpenCode authorization errors, blocked edits and timeouts.
 
-This demonstrates a basic edit, not the complete post workflow. The PMDS template, images, revisions, authentication after restarts and cloud operation remain to be tested as the application is built. The LangChain agent, DeepSeek connection, Telegram interface and application workflow are planned, not implemented.
+An offline round trip through the DeepSeek adapter confirmed that it sends the tool schema and parses a tool call. An isolated OpenCode 2.3.0 server accepted Basic authentication and returned the expected session, prompt and message responses with model execution paused.
 
-## Deployment direction
+The earlier probes sent a real request to OpenCode, and the project lead reported seeing a test label in Figma after the initial sign-in. A live CLI run against a copy of the PMDS template is pending. Its acceptance check is a usable caption and updated text in the selected frame with the other layers and layout intact. [OpenCode probes](../scripts/opencode_probe/)
 
-Develop locally first. Later, the Python application and OpenCode service could run on a cloud machine, with the model providers and Figma accessed over the network. Hosting, operation, credential lifecycle and possible cross-cloud failover remain open decisions.
+## Next milestones
+
+Telegram input, images, revisions and cloud deployment are future work. Authentication after server restarts and long-running operation also need live verification. Hosting, credential lifecycle and possible cross-cloud failover remain open decisions.
