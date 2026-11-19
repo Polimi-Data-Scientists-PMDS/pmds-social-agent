@@ -1,6 +1,6 @@
 # PMDS social media agent — project outline
 
-**Status:** Early draft for team discussion. The detailed scope and implementation plan are still to be defined.
+**Status:** The local CLI prototype passed a live test reported by the team lead. It drafts a caption and updates text in one selected Figma test frame. [Current workflow](../README.md#draft-a-test-post)
 
 ## Goals
 
@@ -13,8 +13,8 @@ A team member sends a request through Telegram, together with relevant links and
 
 ## Technical direction
 
-- Implement the agent in **Python**, starting with **LangChain** and the **DeepSeek API** as its model provider. The exact model and configuration remain open. Consider LangGraph later only if needed.
-- Start with a local command-line interface and plan for **Telegram** later. Use **OpenCode with Figma's MCP connector** for the proposed Figma work. A basic edit has been demonstrated; template editing, image handling and remote operation still need to be validated.
+- The local CLI uses **Python**, **LangChain**, and the **DeepSeek API**, with `deepseek-flash` as the default. [DeepSeek usage](DEEPSEEK.md)
+- The prototype uses **OpenCode with Figma's MCP connector** for text edits. **Telegram**, image handling, revisions, and remote operation are future work.
 - Develop locally first. To make the agent available to the wider team, aim to run it on a **virtual machine**, potentially using **Google Cloud or AWS**. The provider, costs and deployment details remain open.
 
 ## Next steps: define the project in detail
@@ -26,5 +26,5 @@ The immediate next step is to agree with the team on what to build before choosi
 3. **Agree on success criteria:** use realistic PMDS requests to define acceptable drafts and captions, how the team will evaluate them, and how much manual correction is acceptable.
 4. **Test the Figma approach:** investigate whether OpenCode and Figma's MCP connector can edit the existing template, insert supplied images and support revisions, authentication and eventual remote operation.
 5. **Plan operation and access:** decide who can use the bot, how requests and failures are handled, and what cloud resources, budget and credentials are available.
-6. **Turn the decisions into a plan:** document the agreed scope, unresolved questions and milestones, then select the first prototype to build.
+6. **Plan the next milestone:** document the agreed scope, open questions, and criteria for expanding the prototype.
 

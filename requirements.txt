@@ -3,3 +3,4 @@ langchain-deepseek==1.2.0
 # The CLI handles API errors raised by the DeepSeek integration's SDK.
 openai==3.55.0
 pydantic>=2,<3
+python-dotenv==1.2.4

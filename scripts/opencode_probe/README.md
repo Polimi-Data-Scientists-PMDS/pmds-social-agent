@@ -11,7 +11,9 @@ opencode mcp list
 opencode mcp auth figma
 ```
 
-Figma authorization may open a browser and require you to sign in. Keep credentials outside the repository. OpenCode may also need a configured model provider. Figma's remote write tools require a supported client and appropriate file permissions; see [Figma's setup guide](https://developers.figma.com/docs/figma-mcp-server/).
+Figma authorization may open a browser and require you to sign in. Keep credentials out of Git. OpenCode may also need a configured model provider. Figma's remote write tools require a supported client and appropriate file permissions. [Figma setup](https://developers.figma.com/docs/figma-mcp-server/)
+
+For the drafting CLI, use the project `.env` and the OpenCode launcher. The standalone probe commands below take `OPENCODE_PASSWORD` from the shell. [Local credentials](../../docs/SETUP.md#local-credentials)
 
 Set your own password and start the service from the repo root.
 

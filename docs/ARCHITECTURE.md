@@ -22,7 +22,7 @@ Brief + test frame URL → Python CLI
 4. **OpenCode client** uses HTTP Basic authentication to create an OpenCode 2 session, submit a prompt, and poll for an idle result. OpenCode's independently configured model uses the existing Figma MCP connection to inspect the target frame and apply text replacements.
 5. **Review** starts with the caption, frame URL, session ID when available, and OpenCode's report. The CLI requires an explicit edit report after the session finishes. The reviewer checks that the intended Figma layers actually changed and reviews the caption before publication.
 
-The CLI, agent and HTTP client run in one Python process. OpenCode is a separate running service. DeepSeek API credentials and the OpenCode HTTP password are configured in the local environment. OpenCode manages its own model credentials and Figma authorization.
+The CLI, agent and HTTP client run in one Python process. Each developer can supply their own DeepSeek key in the CLI terminal. OpenCode runs in a separate process and manages its own model credentials and Figma authorization. The OpenCode launcher and the CLI use the same local HTTP password. They read it from the shell environment or from the project's ignored `.env`, with shell values taking precedence. [Credential setup](SETUP.md#local-credentials)
 
 ## Verification
 
@@ -30,7 +30,7 @@ The CLI tests use a fake chat model with LangChain's actual tool dispatch and si
 
 An offline round trip through the DeepSeek adapter confirmed that it sends the tool schema and parses a tool call. An isolated OpenCode 2.3.0 server accepted Basic authentication and returned the expected session, prompt and message responses with model execution paused.
 
-The earlier probes sent a real request to OpenCode, and the project lead reported seeing a test label in Figma after the initial sign-in. A live CLI run against a copy of the PMDS template is pending. Its acceptance check is a usable caption and updated text in the selected frame with the other layers and layout intact. [OpenCode probes](../scripts/opencode_probe/)
+The team lead reported a successful live CLI run against a selected frame in a Figma test copy on November 19, 2026. For future live runs, review the caption and check that the intended text layers changed in Figma. Always notify the team before using DeepSeek and keep live runs to a minimum. [Draft a test post](../README.md#draft-a-test-post) · [DeepSeek usage](DEEPSEEK.md)
 
 ## Next milestones
 

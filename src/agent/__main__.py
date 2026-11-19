@@ -1,7 +1,6 @@
 """Command-line entry point for one PMDS post draft."""
 
 import argparse
-import os
 import re
 import sys
 from urllib.parse import parse_qs, urlsplit
@@ -9,6 +8,7 @@ from urllib.parse import parse_qs, urlsplit
 from openai import APIConnectionError, APIStatusError
 
 from .agent import create_model, draft_post, load_agent_config
+from .local_env import read_local_settings
 from .opencode import DEFAULT_URL, OpenCodeClient
 
 
@@ -62,21 +62,25 @@ def main(argv: list[str] | None = None) -> int:
     if not brief:
         parser.error("provide a nonempty brief")
 
-    api_key = os.getenv("DEEPSEEK_API_KEY", "").strip()
-    password = os.getenv("OPENCODE_PASSWORD", "")
-    if not api_key:
-        parser.error("set DEEPSEEK_API_KEY to your DeepSeek API key")
-    if not password.strip():
-        parser.error("set OPENCODE_PASSWORD to the running server's password")
     try:
-        server_url = _opencode_url(os.getenv("OPENCODE_URL", DEFAULT_URL).strip())
+        settings = read_local_settings()
+    except (OSError, UnicodeError):
+        parser.error("could not read the project .env file")
+    api_key = (settings.get("DEEPSEEK_API_KEY") or "").strip()
+    password = settings.get("OPENCODE_PASSWORD") or ""
+    if not api_key:
+        parser.error("set DEEPSEEK_API_KEY in .env or your environment")
+    if not password.strip():
+        parser.error("set OPENCODE_PASSWORD in .env or your environment")
+    try:
+        server_url = _opencode_url((settings.get("OPENCODE_URL", DEFAULT_URL) or "").strip())
     except argparse.ArgumentTypeError as exc:
         parser.error(str(exc))
     try:
         config = load_agent_config()
     except (OSError, ValueError) as exc:
         parser.error(f"could not load src/agent/config/agent.json: {exc}")
-    model_name = os.getenv("DEEPSEEK_MODEL", "").strip() or config.default_model
+    model_name = (settings.get("DEEPSEEK_MODEL") or "").strip() or config.default_model
 
     model = create_model(model_name, api_key)
     opencode = OpenCodeClient(server_url, password)
